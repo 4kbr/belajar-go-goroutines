@@ -3,8 +3,8 @@ package belajar_go_goroutines
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"testing"
-	"time"
 )
 
 func TestAtomic(t *testing.T) {
@@ -12,16 +12,18 @@ func TestAtomic(t *testing.T) {
 	group := sync.WaitGroup{}
 
 	for i := 1; i <= 1000; i++ {
+		group.Add(1)
 		go func() {
-			defer group.Done()
-			group.Add(1)
-			for j := 1; j <= 100; j++ { 0 
+			for j := 1; j <= 10; j++ {
 				x = x + 1
+				atomic.AddInt64(&x, 1)
 			}
+			group.Done()
 		}()
-
-		time.Sleep(5 * time.Second)
+		// time.Sleep(5 * time.Second)
+		group.Wait()
 		fmt.Println("Counter =", x)
 	}
-
 }
+
+
